@@ -14,6 +14,7 @@ var util = require('util');
 
 exports = module.exports = require('./debug');
 exports.log = log;
+exports.setStream = setStream;
 exports.formatArgs = formatArgs;
 exports.save = save;
 exports.load = load;
@@ -36,6 +37,21 @@ var fd = parseInt(process.env.DEBUG_FD, 10) || 2;
 var stream = 1 === fd ? process.stdout :
              2 === fd ? process.stderr :
              createWritableStdioStream(fd);
+var originalStream = stream;
+
+/**
+ * Override the default output stream.
+ * 
+ * @param {Stream} s
+ * @api public
+ *
+ * Null s resets to original stream
+ */
+
+function setStream(s) {
+  stream = s || originalStream;
+}
+
 
 /**
  * Is stdout a TTY? Colored output is enabled when `true`.
